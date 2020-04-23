@@ -60,6 +60,9 @@ class MainActivity : AppCompatActivity() {
             nativeCustomTemplateAd: NativeCustomTemplateAd,
             adView: View
     ) {
+        MainActivity@this.nativeCustomTemplateAd?.destroy()
+        MainActivity@this.nativeCustomTemplateAd = nativeCustomTemplateAd
+
         val headlineView = adView.findViewById<TextView>(R.id.simplecustom_headline)
         val captionView = adView.findViewById<TextView>(R.id.simplecustom_caption)
 
@@ -100,7 +103,6 @@ class MainActivity : AppCompatActivity() {
                     populateSimpleTemplateAdView(ad, adView)
                     frameLayout.removeAllViews()
                     frameLayout.addView(adView)
-                    nativeCustomTemplateAd = ad
                 },
                 { ad: NativeCustomTemplateAd, s: String ->
                     Toast.makeText(this@MainActivity,
