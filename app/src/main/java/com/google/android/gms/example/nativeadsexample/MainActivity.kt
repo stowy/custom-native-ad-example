@@ -88,15 +88,20 @@ class MainActivity : AppCompatActivity() {
     private fun refreshAd() {
 
         refresh_button.isEnabled = true
-        nativeCustomTemplateAd?.destroy()
 
         val builder = AdLoader.Builder(this, AD_MANAGER_AD_UNIT_ID)
 
         builder.forCustomTemplateAd(SIMPLE_TEMPLATE_ID,
                 { ad: NativeCustomTemplateAd ->
+                    if (isDestroyed) {
+                        ad.destroy()
+                        return@forCustomTemplateAd
+                    }
+                    nativeCustomTemplateAd?.destroy()
+
                     val frameLayout = findViewById<FrameLayout>(R.id.ad_frame)
                     val adView = layoutInflater
-                            .inflate(R.layout.ad_simple_custom_template, null)
+                      .inflate(R.layout.ad_simple_custom_template, null)
                     populateSimpleTemplateAdView(ad, adView)
                     frameLayout.removeAllViews()
                     frameLayout.addView(adView)

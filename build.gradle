@@ -17,6 +17,10 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            def localRepo = 'file://' + new File(System.getProperty('user.home'), 'Desktop/gmscore_repo').absolutePath;
+            url uri(localRepo);
+        }
         google()
         jcenter()
     }
