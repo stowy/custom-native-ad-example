@@ -17,6 +17,7 @@
 package com.google.android.gms.example.nativeadsexample
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.*
@@ -28,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 const val AD_MANAGER_AD_UNIT_ID = "/6499/example/native"
 const val SIMPLE_TEMPLATE_ID = "10104090"
-
+const val TAG = "LEAKCHECK_MainActivity"
 
 /**
  * A simple activity class that displays native ad formats.
@@ -90,13 +91,16 @@ class MainActivity : AppCompatActivity() {
         refresh_button.isEnabled = true
 
         val builder = AdLoader.Builder(this, AD_MANAGER_AD_UNIT_ID)
-
+        Log.d("leakcheck", "load new ad");
         builder.forCustomTemplateAd(SIMPLE_TEMPLATE_ID,
                 { ad: NativeCustomTemplateAd ->
+                    Log.d("leakcheck", "ad returned");
                     if (isDestroyed) {
+                        Log.d("leakcheck", "ad destroy after activity destroyed");
                         ad.destroy()
                         return@forCustomTemplateAd
                     }
+                    Log.d("leakcheck", "ad viewed");
                     nativeCustomTemplateAd?.destroy()
 
                     val frameLayout = findViewById<FrameLayout>(R.id.ad_frame)
@@ -118,6 +122,7 @@ class MainActivity : AppCompatActivity() {
                 refresh_button.isEnabled = true
                 Toast.makeText(this@MainActivity, "Failed to load native ad: $errorCode",
                         Toast.LENGTH_SHORT).show()
+              Log.d("leakcheck", "ad failed to load");
             }
         }).build()
 
@@ -127,6 +132,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        Log.d("leakcheck", "onDestroy");
         nativeCustomTemplateAd?.destroy()
         super.onDestroy()
     }
